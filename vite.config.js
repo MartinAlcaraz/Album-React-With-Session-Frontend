@@ -6,7 +6,7 @@ import path from 'path'
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [react()],
-  base: "/Album-fotos-frontend/",  // para gh-pages
+  base: "/Album-Fotos-FrontEnd/",  // para gh-pages
   build: {
     outDir: 'dist'
   }
