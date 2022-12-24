@@ -78,6 +78,11 @@ const Search = () => {
             const users = await UserServices.getUsers();
             const result = filtrarBusqueda(users);
             setDataUsers(result);
+            // setea al primer resultado como activo
+            if (result.length > 0) {
+                cambiarEstado(result[0]._id)
+            }
+            
             setLoadingUsers(false);
         }
         fetchData();
