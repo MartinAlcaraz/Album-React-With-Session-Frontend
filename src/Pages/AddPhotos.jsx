@@ -66,7 +66,7 @@ const AddPhotos = () => {
                 
         if (response.data.updated == true) {
             setShowLoading(false);
-            navigate("/");
+            navigate("/dashboard");
         }else{
             setShowLoading(false);
             navigate("/404");

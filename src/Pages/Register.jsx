@@ -4,10 +4,11 @@ import Loading from '../components/Loading';
 import addUserIcon from '../icons/addUserIcon.svg';
 import errorImg from '../icons/errorImg.svg';
 import UserServices from '../services/UserServices';
+import RegisterServices from '../services/RegisterServices';
 import ModalLoading from '../components/ModalLoading';
 import { useForm } from 'react-hook-form';
 
-const AddUser = () => {
+const Register = () => {
 
     const { register, handleSubmit, trigger, formState: { errors } } = useForm();
 
@@ -18,7 +19,6 @@ const AddUser = () => {
     const [showLoading, setShowLoading] = React.useState(false);
     const [users, setUsers] = React.useState([]);
 
-
     React.useEffect(() => {
         async function getUsers() {
             let res = await UserServices.getUsers();
@@ -28,16 +28,17 @@ const AddUser = () => {
     }, []);
 
     const onsubmit = async (data, e) => {
-        //const newUser = { userName: data.nombre, image: data.selectedFile[0] };         
+
         const formData = new FormData()
         formData.append('userName', data.nombre);
+        formData.append('password', data.password);
         formData.append('image', data.selectedFile[0]);
         setShowLoading(true);   //  se muestra la animacion de loading
-        const res = await UserServices.postUser(formData);
+        const res = await RegisterServices.register(formData);
 
         if (res.data.saved) {
             setShowLoading(false);
-            navigate("/dashboard");
+            navigate("/login");
         } else {
             setShowLoading(false);
             navigate("/404");
@@ -69,7 +70,7 @@ const AddUser = () => {
     }
 
     function nombreNoExiste(value) {
-        
+
         for (let i = 0; i < users.length; i++) {
             if (users[i].userName.toLowerCase() == value.toLowerCase()) {
                 return false;
@@ -86,12 +87,13 @@ const AddUser = () => {
                 showLoading ? <ModalLoading /> : <></>
             }
 
-            <h2 className='mx-auto text-center text-2xl font-semibold'>Crear usuario</h2>
+            <h2 className='mx-auto text-center text-2xl font-semibold'>Formulario de Registro</h2>
+
             <form onSubmit={handleSubmit(onsubmit)} className="flex flex-col-reverse gap-4 items-center sm:flex-row">
 
                 <div className="flex flex-col basis-1/2">
-
-                    <input type='text' name="nombre" className="p-4 m-2 rounded-md" placeholder="Nombre de usuario"
+                    
+                    <input type='text' name="nombre" className="p-2 m-2 mx-auto rounded-md" placeholder="Nombre de usuario"
                         {...register('nombre', {
                             required: "El nombre es requerido",
                             maxLength: { value: 10, message: "Nombre muy largo." },
@@ -105,7 +107,20 @@ const AddUser = () => {
                     {
                         errors.nombre ? <div className='text-sm text-rose-500 text-center'>{errors.nombre.message}</div> : <></>
                     }
+
+                    <input type='password' name="password" className="p-2 m-2 mx-auto rounded-md" placeholder="Password"
+                        {...register('password', {
+                            required: "El password es requerido",
+                            maxLength: { value: 10, message: "Password muy largo." },
+                            minLength: { value: 2, message: "Password muy corto." }
+                        })}
+                    />
+                    {
+                        errors.password ? <div className='text-sm text-rose-500 text-center'>{errors.password.message}</div> : <></>
+                    }
+
                     <input type="submit" className="button-primary" value="Agregar usuario" />
+
                 </div>
 
                 <div className="flex flex-col basis-1/2 w-full">
@@ -129,11 +144,11 @@ const AddUser = () => {
                     {
                         <div className='text-sm h-4 text-rose-500 text-center'>{errors.selectedFile ? errors.selectedFile.message : ''}</div>
                     }
-                    <button className="button-primary" onClick={addImage}>Agregar imagen de perfil</button>
+                    <button className="button-primary" onClick={addImage}>Subir Imagen de Perfil</button>
                 </div>
             </form>
         </div>
     )
 }
 
-export default AddUser;
+export default Register;

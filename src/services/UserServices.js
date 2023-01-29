@@ -1,9 +1,9 @@
 import axios from "axios";
 
 // const URI = '/api/users';                //  si estamos en un servidor para produccion se deja asi   = '/api/users'
-// const URI = 'http://localhost:3000/api/users'; // en desarrollo
+const URI = 'https://localhost:3000/api/users'; // en desarrollo
 // const URI = 'https://album-fotos-backend-production.up.railway.app/api/users';
-const URI = 'https://albumfotos-api.onrender.com/api/users'
+// const URI = 'https://albumfotos-api.onrender.com/api/users'
 
 const UserServices = {};
 

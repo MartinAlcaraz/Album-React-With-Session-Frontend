@@ -27,6 +27,7 @@
     @apply px-4 py-2 my-2 mx-auto w-auto rounded-md text-xl font-semibold boton-transparente cursor-pointer;
   }
 
+
   .button-secondary {
     @apply px-4 m-2 py-2 rounded-md text-xl font-semibold boton-transparente cursor-pointer;
   }

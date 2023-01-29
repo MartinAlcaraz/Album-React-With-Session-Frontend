@@ -2,8 +2,10 @@ import icono from "../icons/react.svg";
 import lensIcon from "../icons/lensIcon.svg";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import UserServices from '../services/UserServices.js';
+import LoginServices from "../services/LoginServices.js";
 import { useState, useEffect, useRef } from 'react';
 import ResultList from '../components/ResultList.jsx';
+
 
 const NavBar = () => {
 
@@ -57,10 +59,20 @@ const NavBar = () => {
         }
     }
 
+    const onLogoutHandler = async () => {
+        const res = await LoginServices.logout();
+        console.log(res);
+        if (res || !res) {
+            navigate('/');
+        }
+    }
+
     return (
         <div className="bg-primary border-primary m-1 md:m-2 flex flex-col md:flex-row justify-around p-5 items-center z-10">
             <img src={icono} alt='icono react' className="spin-slow hidden md:block" />
-            <Link to='/' className="font-serif text-4xl font-bold">Album</Link>
+            <Link to='/dashboard' className="font-serif text-4xl font-bold">Album</Link>
+            <Link to='/login'>Login</Link>
+            <button onClick={onLogoutHandler}>Logout</button>
             {
                 showSearch ? <form onSubmit={onSubmit} autoComplete="off" className="z-20">
                     <input type="text" onChange={onChange} name="buscador" placeholder="Buscar" ref={inputRef} required
@@ -69,6 +81,7 @@ const NavBar = () => {
                     {showList ? <ResultList users={users} text={text} setInputValue={setInputValue} /> : <></>}
                 </form> : <></>
             }
+            <Link to='/register' className="text-xl font-bold">Registrarse</Link>
         </div>
     )
 }
