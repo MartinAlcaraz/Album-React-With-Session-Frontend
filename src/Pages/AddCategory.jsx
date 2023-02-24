@@ -3,13 +3,14 @@ import { useNavigate } from 'react-router-dom';
 import Loading from '../components/Loading';
 import addUserIcon from '../icons/addUserIcon.svg';
 import errorImg from '../icons/errorImg.svg';
-import UserServices from '../services/UserServices';
+import UserServices from '../services/UserServices.js';
 import ModalLoading from '../components/ModalLoading';
 import { useForm } from 'react-hook-form';
 
-const AddUser = () => {
 
-    const { register, handleSubmit, trigger, formState: { errors } } = useForm();
+const AddCategory = () => {
+
+    const { register, handleSubmit, trigger, setError, formState: { errors } } = useForm();
 
     const navigate = useNavigate();
 
@@ -18,29 +19,24 @@ const AddUser = () => {
     const [showLoading, setShowLoading] = React.useState(false);
     const [users, setUsers] = React.useState([]);
 
-
-    React.useEffect(() => {
-        async function getUsers() {
-            let res = await UserServices.getUsers();
-            setUsers(res);
-        }
-        getUsers();
-    }, []);
-
     const onsubmit = async (data, e) => {
         //const newUser = { userName: data.nombre, image: data.selectedFile[0] };         
-        const formData = new FormData()
-        formData.append('userName', data.nombre);
-        formData.append('image', data.selectedFile[0]);
-        setShowLoading(true);   //  se muestra la animacion de loading
-        const res = await UserServices.postUser(formData);
+        const formData = new FormData();
+        formData.append('categoryName', data.nombre);
+        formData.append('image', data.selectedFile[0]); // en el backend multer recive los archivos de imagen con el key del FormData ó name del input => 'image'
 
-        if (res.data.saved) {
+        setShowLoading(true);   //  se muestra la animacion de loading
+        const res = await UserServices.postCategory(formData);
+        if (res.saved == true) {
             setShowLoading(false);
             navigate("/dashboard");
         } else {
-            setShowLoading(false);
-            navigate("/404");
+            if (res.nameError == true) {
+                setError('nombre', { message: 'El nombre de esta categoria ya existe.' });
+            } else {
+                setShowLoading(false);
+                navigate("/404");
+            }
         }
     }
 
@@ -69,7 +65,7 @@ const AddUser = () => {
     }
 
     function nombreNoExiste(value) {
-        
+
         for (let i = 0; i < users.length; i++) {
             if (users[i].userName.toLowerCase() == value.toLowerCase()) {
                 return false;
@@ -86,26 +82,26 @@ const AddUser = () => {
                 showLoading ? <ModalLoading /> : <></>
             }
 
-            <h2 className='mx-auto text-center text-2xl font-semibold'>Crear usuario</h2>
+            <h2 className='mx-auto text-center text-2xl font-semibold'>Crear categoria</h2>
             <form onSubmit={handleSubmit(onsubmit)} className="flex flex-col-reverse gap-4 items-center sm:flex-row">
 
                 <div className="flex flex-col basis-1/2">
 
-                    <input type='text' name="nombre" className="p-4 m-2 rounded-md" placeholder="Nombre de usuario"
+                    <input type='text' name="nombre" className="p-4 m-2 rounded-md" placeholder="Nombre de categoria"
                         {...register('nombre', {
-                            required: "El nombre es requerido",
+                            required: "El nombre de la categoria es requerido",
                             maxLength: { value: 10, message: "Nombre muy largo." },
                             minLength: { value: 2, message: "Nombre muy corto." },
                             pattern: { value: /^[A-Za-z]+$/, message: "No se permiten caracteres especiales" },
                             validate: {
-                                nameExist: (value) => (nombreNoExiste(value)) || "El nombre de usuario ya existe."
+                                nameExist: (value) => (nombreNoExiste(value)) || "El nombre de categoria ya existe."
                             }
                         })}
                     />
                     {
                         errors.nombre ? <div className='text-sm text-rose-500 text-center'>{errors.nombre.message}</div> : <></>
                     }
-                    <input type="submit" className="button-primary" value="Agregar usuario" />
+                    <input type="submit" className="button-primary" value="Agregar categoria" />
                 </div>
 
                 <div className="flex flex-col basis-1/2 w-full">
@@ -114,7 +110,7 @@ const AddUser = () => {
                             {loadingImg ? <Loading /> : (errors.selectedFile ? <img src={errorImg} className=" h-40 w-40 m-auto mt-[10%]" /> : <img src={selectedImage} className='object-contain w-full h-full' />)}
                         </div>
 
-                        <input type='file' name="img" id="selectedFile" className="w-full h-full p-4 basis-1/2 absolute top-0 left-0 opacity-0 cursor-pointer"
+                        <input type='file' name="image" id="selectedFile" className="w-full h-full p-4 basis-1/2 absolute top-0 left-0 opacity-0 cursor-pointer"
                             accept="image/jpeg, image/png"
                             {...register("selectedFile", {
                                 required: "Seleccione una imagen de perfil.",
@@ -129,11 +125,11 @@ const AddUser = () => {
                     {
                         <div className='text-sm h-4 text-rose-500 text-center'>{errors.selectedFile ? errors.selectedFile.message : ''}</div>
                     }
-                    <button className="button-primary" onClick={addImage}>Agregar imagen de perfil</button>
+                    <button className="button-primary" onClick={addImage}>Agregar imagen</button>
                 </div>
             </form>
         </div>
     )
 }
 
-export default AddUser;
+export default AddCategory;

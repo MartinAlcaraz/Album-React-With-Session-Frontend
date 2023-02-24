@@ -4,19 +4,19 @@
 
 @layer components {
   .bg-primary-md {
-    @apply bg-blue-500;
+    @apply bg-cyan-700;
   }
 
   .bg-secondary-md {
-    @apply bg-blue-500/50;
+    @apply bg-cyan-500/50;
   }
 
   .bg-primary {
-    @apply bg-blue-400/90;
+    @apply bg-cyan-500/90;
   }
 
   .bg-secondary {
-    @apply bg-blue-500/80;
+    @apply bg-cyan-700/90;
   }
 
   .border-primary {

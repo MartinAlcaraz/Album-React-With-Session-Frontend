@@ -15,18 +15,19 @@ const AddPhotos = () => {
     const navigate = useNavigate();
 
     const [selectedImg, setSelectedImg] = useState(iconImage);  // foto subida por el usuario
-    const [userInfo, setUserInfo] = useState(null);
+    const [categoryInfo, setCategoryInfo] = useState(null);
     const [loadingImg, setLoadingImg] = useState(false);
     const buttonRef = useRef();
     const [showLoading, setShowLoading] = useState(false);
 
 
-    useEffect(() => {   // se obtienen los datos del usuario seleccionado para subir fotos
-        async function getUserInfo() {
-            const user = await UserServices.getOneUser(params.id);
-            setUserInfo(user);
+    useEffect(() => {   // se obtienen los datos de la categoria seleccionada para subir fotos
+        async function getCategoryInfo() {
+            const res = await UserServices.getCategoryInfo(params.id);
+            // console.log('res ',res.oneCategory.categoryName );
+            setCategoryInfo(res.oneCategory);
         }
-        getUserInfo();
+        getCategoryInfo();
     }, []);
 
     async function cargarImagen(file) {
@@ -79,7 +80,7 @@ const AddPhotos = () => {
                 showLoading? <ModalLoading /> : <></>
             }
 
-            <h2 className='px-4 leading-4 text-xl md:mb-1 md:text-2xl font-semibold text-center '>Agregar foto de <strong>{userInfo?.userName}</strong> <img src={userInfo?.img} className="h-20 inline" /></h2>
+            <h2 className='px-4 leading-4 text-xl md:mb-1 md:text-2xl font-semibold text-center'>Agregar foto de <strong className='capitalize'>{categoryInfo?.categoryName}</strong> <img src={categoryInfo?.imageUrl} className="h-20 inline" /></h2>
             <form onSubmit={handleSubmit(agregarFoto)} className='p-4 pt-0 flex flex-col md:flex-row-reverse'>
                 <div className='basis-2/3'>
                     {

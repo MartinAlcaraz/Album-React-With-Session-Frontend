@@ -1,34 +1,55 @@
+import LoginServices from '../services/LoginServices.js';
 import { useState, useEffect } from 'react'
-import UserServices from '../services/UserServices.js';
 import { createContext } from 'react';
 
-export const UserContext = createContext();  // nombre del contexto  // TaskContext.Provider contiene las variables que se pasan como parametros
-
+export const UserContext = createContext();  // nombre del contexto  // UserContext.Provider contiene las variables que se pasan como parametros
 
 export function UserContextProvider(props) {    // componente que contiene el contexto
 
-    const [dataUsers, setDataUsers] = useState([]);         // se crea la variable de estado global como tasks = []
+    let u = JSON.parse(localStorage.getItem('user'));
+    
+    const [user, setUser] = useState(u);         // se crea la variable de estado global como user = false
 
-    useEffect(async () => {		
-        setDataUsers( await UserServices.getUsers() );
-    }, []);
+    const [showModalExpiredLoggin, setShowModalExpiredLoggin] = useState(false);
 
-    // function createTask(tarea) {		// recibe  el objeto tarea desde taskForm
-    //     const newTask = {
-    //         id: tasks.length,
-    //         nombre: tarea.texto,
-    //         descripcion: tarea.descripcion
-    //     }
-    //     setTasks([...tasks, newTask]);	// se copian las tareas de tasks y se agrega la nueva en un nuevo arreglo
-    // }
+    const checkIsLogged = async () => {
+        let u = JSON.parse(localStorage.getItem('user'));
+        setUser (u);
+        if ( u.logged == true ) {
+            const response = await LoginServices.isLogged();
+            if (response.status == 200) {
+                console.log('Is logged');
+            } else {
+                console.log('Is not logged');
+                setShowModalExpiredLoggin(true);
+                setUnloggedUser();
+            }
+        }else{
+            setUser({ logged : false });
+        }
+    }
 
-    // function deleteTask(idTask) {		// idTask es el id del objeto a eliminar
-    //     const newTasks = tasks.filter((tarea) => { return tarea.id !== idTask }); // filter devuelve todas las tareas excepto la que tiene el id == a idTask
-    //     setTasks(newTasks);												// se asigna un nuevo arreglo a la variable de estado tasks
-    // }
+    useEffect(()=>{
+        setInterval(() => {
+            checkIsLogged();
+        }, 10000);
+    },[]);
+    
+    const setLoggedUser = async (data) => {
+        console.log('setLoggedUser true');
+        const dataUser = { logged : data.ok, username: data.username, imgUrl: data.imageUrl };
+        localStorage.setItem('user', JSON.stringify(dataUser));
+        setUser(dataUser);
+    }
+
+    const setUnloggedUser = () => {
+        LoginServices.logout();
+        localStorage.setItem('user', JSON.stringify({ logged : false }));
+        setUser({ logged : false });
+    }
 
     return (
-        <UserContext.Provider value={{dataUsers}}> 
+        <UserContext.Provider value={{ user, setLoggedUser, setUnloggedUser, showModalExpiredLoggin, setShowModalExpiredLoggin }}>
             {props.children}
         </UserContext.Provider>
     )

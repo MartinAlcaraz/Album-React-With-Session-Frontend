@@ -81,7 +81,7 @@ const Register = () => {
 
 
     return (
-        <div className='rounded-md bg-primary bg-secondary md:bg-secondary-md p-8 pt-2 m-2'>
+        <div className='p-8 pt-2 m-1 border-primary bg-primary bg-secondary md:bg-secondary-md md:m-2'>
 
             {
                 showLoading ? <ModalLoading /> : <></>

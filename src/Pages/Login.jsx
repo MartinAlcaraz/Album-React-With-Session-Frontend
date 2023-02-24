@@ -4,9 +4,13 @@ import Loading from '../components/Loading';
 import LoginServices from '../services/LoginServices';
 import ModalLoading from '../components/ModalLoading';
 import { useForm } from 'react-hook-form';
+import { UserContext } from '../context/UserContext';
+import { useContext } from 'react';
+import { Button } from '@material-tailwind/react'
 
 const Login = () => {
 
+    const { setLoggedUser } = useContext(UserContext);
     const { register, handleSubmit, setError, trigger, formState: { errors } } = useForm();
 
     const navigate = useNavigate();
@@ -19,8 +23,9 @@ const Login = () => {
 
         setShowLoading(true);   //  se muestra la animacion de loading
         const res = await LoginServices.login(data.nombre, data.password);
-        console.log(res);
-        if (res.status == 200) {
+        console.log('res ',res);
+        if (res.ok == true) {
+            setLoggedUser(res);    // se establece el usuario logueado en la variable user de UserContext
             setShowLoading(false);
             navigate("/dashboard");
         } else {
@@ -31,7 +36,7 @@ const Login = () => {
     }
 
     return (
-        <div className='rounded-md bg-primary bg-secondary md:bg-secondary-md p-8 pt-4 m-2 min-h-[65vh]'>
+        <div className='p-8 m-1 min-h-[65vh] border-primary bg-primary bg-secondary md:bg-secondary-md md:m-2'>
 
             {
                 showLoading ? <ModalLoading /> : <></>
@@ -39,7 +44,7 @@ const Login = () => {
 
             <h2 className='mx-auto text-center text-2xl font-semibold'>Login</h2>
 
-            <form onSubmit={handleSubmit(onsubmit)} className="my-4 mx-auto flex flex-col items-center">
+            <form onSubmit={ handleSubmit(onsubmit) } className="my-4 mx-auto flex flex-col items-center">
 
                     <input type='text' name="nombre" className="p-2 m-2 rounded-md" placeholder="Nombre de usuario" autoFocus={true}
                         {...register('nombre', {
@@ -57,7 +62,7 @@ const Login = () => {
                         })}
                     />
                     {
-                        errors.password ? <div className='text-sm font-medium text-rose-700/90 md:text-rose-500/90 text-center '>{errors.password.message}</div> : <></>
+                        errors.password ? <div className='font-medium text-red-700 md:text-red-400 text-center '>{errors.password.message}</div> : <></>
                     }
 
                     <input type="submit" className="button-primary" value="Login" />

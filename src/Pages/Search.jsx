@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react'
 import { useLocation } from 'react-router-dom';
 import AddPhotoButton from '../components/AddPhotoButton';
-import AddUserButton from '../components/AddUserButton';
+import AddUserButton from '../components/AddCategoryButton';
 import PictureList from '../components/PicturesList';
-import UsersList from '../components/UsersList';
+import CategoryList from '../components/CategoryList';
 import Loading from '../components/Loading.jsx';
 import UserServices from '../services/UserServices.js';
 import pictureServices from '../services/PicturesServices.js';
@@ -115,7 +115,7 @@ const Search = () => {
                 <aside className='border-primary bg-secondary md:bg-secondary-md basis-1/4 h-[90vh]'>
                     <AddUserButton />
                     {
-                        loadingUsers ? <Loading small={true} /> : <UsersList users={dataUsers} cambiarEstado={cambiarEstado} deleteUser={deleteUser} />
+                        loadingUsers ? <Loading small={true} /> : <CategoryList users={dataUsers} cambiarEstado={cambiarEstado} deleteUser={deleteUser} />
                     }
                 </aside>
 
