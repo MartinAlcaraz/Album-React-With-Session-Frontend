@@ -6,6 +6,7 @@ import CategoryList from '../components/CategoryList';
 import Loading from '../components/Loading.jsx';
 import UserServices from '../services/UserServices.js';
 import pictureServices from '../services/PicturesServices.js';
+import CategoryServices from '../services/CategoryService';
 
 const Dashboard = () => {
 
@@ -16,10 +17,11 @@ const Dashboard = () => {
     const [loadingPics, setLoadingPics] = useState(true);
 
     async function cambiarEstado(_id) {
-        setLoadingPics(true);        
+        setLoadingPics(true);
         const saved = await UserServices.saveActiveCategory(_id);
 
         if (saved.updated) {
+
             const res = await UserServices.getCategories();
             setCategories(res.userCategories);
 
@@ -29,64 +31,65 @@ const Dashboard = () => {
             } else {
                 setCategoryActive(null);
             }
+        } else {
+            console.log(saved.message);
         }
+
     }
 
-    async function deleteUser(userId) {
+    async function deleteCategory(category) {
         setLoadingPics(true);
-        const deleted = await UserServices.deleteUser(userId);
+        const response = await CategoryServices.deleteCategory(category);
 
-        if (deleted.ok) {
-            await pictureServices.deleteAllPictures(userId);
-            setPics([]);
-            const users = await UserServices.getUsers();
-            setDataUsers(users);
-            setCategoryActive(null);
+        if (response.deleted) {
+            setPics([]);    // se reinicia la lista de imagenes
+            fetchDataUser();    // se vuelve a pedir los datos del usuario
         } else {
-            alert('No se pudo borrar el usuario.');
+            alert('No se pudo borrar la categoria.');
         }
         setLoadingPics(false);
     }
 
     async function deletePicture(public_id) {
-        const deleted = await pictureServices.deleteOnePicture(categoryActive._id, public_id);
+        const response = await pictureServices.deleteOnePicture(categoryActive.category_id, public_id);
 
-        if (deleted.data.ok) {
-            getPics();
+        if (response.deleted) {
+            getCategoryPics();
         } else {
             alert('No se pudo borrar la imagen.');
         }
     }
 
+    async function fetchDataUser() {
+        const res = await UserServices.getCategories();
+        setCategories(res.userCategories);
+
+        // si existen categorias se busca el activo
+        if (res.userCategories) {
+            setCategoryActive(res.userCategories.find((c) => c.isActive == true));
+        } else {
+            setCategoryActive(null);
+        }
+        setLoadingCategories(false);
+    }
+
     // 1° se piden los datos del usuario
     useEffect(() => {
-        async function fetchData() {
-            const res = await UserServices.getCategories();
-            console.log('res ',res);
-            setCategories(res.userCategories);
-
-            // si existen categorias se busca el activo
-            if (res.userCategories) {
-                setCategoryActive(res.userCategories.find((c) => c.isActive == true));
-            } else {
-                setCategoryActive(null);
-            }
-            setLoadingCategories(false);
-        }
-        fetchData();
+        fetchDataUser();
     }, []);
 
     const getCategoryPics = async () => {
         // si hay una categoria activa se buscan las imagenes de la categoria.
-        if (categoryActive) {   
-            let response = await pictureServices.getPictures(categoryActive.category_id); // se obtienen las imagenes de la categoria activa
+        if (categoryActive) {
+            const response = await pictureServices.getPictures(categoryActive.category_id); // se obtienen las imagenes de la categoria activa
+
             if (response) {
-                setPics(response.data.images);
+                setPics(response.images);
                 setTimeout(() => {
                     setLoadingPics(false);
                 }, 200);
             }
-        }else{
+        } else {
             setLoadingPics(false);
         }
     }
@@ -95,32 +98,39 @@ const Dashboard = () => {
     useEffect(() => {
         setLoadingPics(true);
         setPics([]);
-        getCategoryPics();        
+        getCategoryPics();
 
     }, [categoryActive]);
 
     return (
-        <main className='flex flex-row justify-between m-1 md:m-2 gap-1 md:gap-2'>
+        <div className='h-full' >
+            <main className='flex flex-row justify-between m-1 md:m-2 gap-1 md:gap-2'>
 
-            <aside className='border-primary bg-secondary md:bg-secondary-md basis-1/4 h-[90vh]'>
-                <AddCategoryButton />
-                {
-                    loadingCategories ? <Loading small={true} /> : <CategoryList categories={categories} cambiarEstado={cambiarEstado} deleteUser={deleteUser} />
-                }
-            </aside>
+                <aside className=' border-primary bg-secondary md:bg-secondary-md basis-1/4 h-[90vh]'>
+                    <AddCategoryButton />
+                    <div className='mt-[-4.5rem] h-full'>
+                        {
+                            loadingCategories ? <Loading small={true} /> : <CategoryList categories={categories} cambiarEstado={cambiarEstado} deleteCategory={deleteCategory} />
+                        }
+                    </div>
+                </aside>
 
-            <article className='border-primary bg-secondary md:bg-secondary-md basis-3/4 h-[90vh]'>
-                {
-                    // si hay una categoria seleccionada se muestra el boton de agregar imagen
-                    categoryActive ? <AddPhotoButton categoryActive={categoryActive} /> : <></>
-                }
-                {
-                    loadingPics ? <Loading /> : <PictureList pictures={pics} deletePicture={deletePicture} />
-                }
+                <article className=' border-primary bg-secondary md:bg-secondary-md basis-3/4 h-[90vh]'>
 
-            </article>
+                    {
+                        // si hay una categoria seleccionada se muestra el boton de agregar imagen
+                        categoryActive ? <AddPhotoButton categoryActive={categoryActive} /> : <></>
+                    }
+                    <div className='mt-[-4.5rem] h-full'>
+                        {
+                            loadingPics ? <Loading /> : <PictureList pictures={pics} deletePicture={deletePicture} />
+                        }
+                    </div>
 
-        </main>
+                </article>
+
+            </main>
+        </div >
     )
 }
 

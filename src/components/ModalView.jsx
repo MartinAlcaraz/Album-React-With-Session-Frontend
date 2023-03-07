@@ -3,7 +3,7 @@ import CloseIcon from '../icons/CloseIcon.jsx'
 import TrashIcon from '../icons/TrashIcon.jsx'
 
 
-const ModalView = ({ url, setModalView, deletePicture, public_id }) => {
+const ModalView = ({ url, setModalView, deletePicture, img_public_id }) => {
 
     const claseAnimacionIn = 'animacion-in';    // animacion para la entrada de la ventana
     const claseAnimacionOut = 'animacion-out';  // animacion para la salida de la ventana
@@ -12,7 +12,8 @@ const ModalView = ({ url, setModalView, deletePicture, public_id }) => {
 
     function Eliminar() {
         setAnimacion(claseAnimacionOut);
-        deletePicture(public_id);
+
+        deletePicture(img_public_id);
         setTimeout(() => {
             setModalView(false);
         }, 550);
@@ -30,10 +31,10 @@ const ModalView = ({ url, setModalView, deletePicture, public_id }) => {
             <div className="m-auto w-[80vw] h-[80vh] align-middle flex flex-col" onClick={Cancelar}>
                 <div className="align-middle flex justify-between pb-2 px-4">
                     <button className="w-6 h-6" onClick={Eliminar} >
-                        <TrashIcon className="text-slate-200 hover:text-red-600 w-6 h-6"/>
+                        <TrashIcon className="text-slate-200 text-gray-100 hover:text-red-600 w-6 h-6"/>
                     </button>
                     <button className="w-6 h-6" onClick={Cancelar}>
-                        <CloseIcon className="text-slate-200 hover:text-blue-600 w-8 h-8"/>
+                        <CloseIcon className="text-slate-200 text-gray-100 hover:text-blue-600 w-8 h-8"/>
                     </button>
                 </div>
                 <div className="align-middle">

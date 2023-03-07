@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-const ModalDelete = ({ setShowDelete, user, deleteUser }) => {
+const ModalDelete = ({ setShowDelete, category, deleteCategory }) => {
 
     const claseAnimacionIn = 'animacion-in';    // animacion para la entrada de la ventana
     const claseAnimacionOut = 'animacion-out';  // animacion para la salida de la ventana
@@ -9,7 +9,7 @@ const ModalDelete = ({ setShowDelete, user, deleteUser }) => {
 
     function Eliminar() {
         setAnimacion(claseAnimacionOut);
-        deleteUser(user._id);
+        deleteCategory(category);
         setTimeout(() => {
             setShowDelete(false);
         }, 600);
@@ -25,7 +25,7 @@ const ModalDelete = ({ setShowDelete, user, deleteUser }) => {
     return (
         <div className={ "bg-black/50 fixed h-screen w-screen top-0 left-0 z-20 pt-[30vh] "+ animacion}>
             <div className="m-auto w-3/4">
-                <p className="text-center p-4 mx-auto bg-primary border-primary">Eliminar el usuario <strong>{user.userName}</strong>?</p>
+                <p className="text-center p-4 mx-auto bg-primary border-primary ">Eliminar la categoria <strong className="capitalize">{category.categoryName}</strong>?</p>
                 <div className="flex justify-around">
                     <button className="button-primary w-1/3 " onClick={Eliminar}>Si</button>
                     <button className="button-primary w-1/3 " onClick={Cancelar}>No</button>

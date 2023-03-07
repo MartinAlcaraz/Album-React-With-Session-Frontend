@@ -59,13 +59,13 @@ const AddPhotos = () => {
         buttonRef.current.disabled = true;
 
         let formData = new FormData();
-        formData.append('userId', params.id);
+        formData.append('category_id', params.id);
         formData.append('image', data.inputFile[0]);
 
         setShowLoading(true);
         const response = await pictureServices.postPicture(formData);
                 
-        if (response.data.updated == true) {
+        if (response.updated == true) {
             setShowLoading(false);
             navigate("/dashboard");
         }else{
@@ -75,18 +75,20 @@ const AddPhotos = () => {
     }
 
     return (
-        <div className='m-2 min-h-[80vh] p-10 bg-secondary md:bg-secondary-md border-primary'>
+        <div className='m-1 mt-0 min-h-[80vh] p-10 bg-secondary md:bg-secondary-md border-primary'>
             {
                 showLoading? <ModalLoading /> : <></>
             }
-
-            <h2 className='px-4 leading-4 text-xl md:mb-1 md:text-2xl font-semibold text-center'>Agregar foto de <strong className='capitalize'>{categoryInfo?.categoryName}</strong> <img src={categoryInfo?.imageUrl} className="h-20 inline" /></h2>
-            <form onSubmit={handleSubmit(agregarFoto)} className='p-4 pt-0 flex flex-col md:flex-row-reverse'>
-                <div className='basis-2/3'>
+            
+            <img src={categoryInfo?.imageUrl} className="h-20 w-20 mx-auto my-2 md:hidden" />
+           
+            <h2 className='px-4 leading-4 text-xl md:mb-1 md:text-2xl font-semibold text-center'>Agregar foto a la categoria <strong className='capitalize'>{categoryInfo?.categoryName}</strong> <img src={categoryInfo?.imageUrl} className="h-20 hidden md:inline" /></h2>
+            <form onSubmit={handleSubmit(agregarFoto)} className='p-4 flex flex-col md:flex-row-reverse'>
+                <div className='h-[35vh] basis-2/3'>
                     {
                         loadingImg ? <Loading /> :
                             <div className='h-full hover:cursor-pointer' onClick={addImage} >
-                                <img src={selectedImg} className="min-h-[40vh] h-full mx-auto" />
+                                <img src={selectedImg} className="h-full min-h-[30vh]  mx-auto" />
                             </div>
                     }
                 </div>
@@ -101,7 +103,7 @@ const AddPhotos = () => {
                             onChange: (value) => cargarImagen(value.target.files[0])
                         })} />
 
-                    <input type="submit" ref={buttonRef} value="Agregar foto al Album" className='button-primary bg-blue-700 text-base' />
+                    <input type="submit" ref={buttonRef} value="Agregar foto al Album" className='mt-4 button-primary bg-blue-700 text-base' />
 
                     <p className="h-4 text-sm text-rose-500 text-center">{errors?.inputFile ? errors.inputFile.message : ""}</p>
 

@@ -1,8 +1,8 @@
 
 // const URI = '/api/users';                //  si estamos en un servidor para produccion se deja asi   = '/api/users'
-const URI = 'https://localhost:3000'; // en desarrollo
-// const URI = 'https://album-fotos-backend-production.up.railway.app/api/users';
-// const URI = 'https://albumfotos-api.onrender.com/api/login'
+// const URI = 'https://localhost:3000'; // en desarrollo
+const URI = 'https://api-album-react-with-session-backend.onrender.com';
+
 
 const LoginServices = {};
 

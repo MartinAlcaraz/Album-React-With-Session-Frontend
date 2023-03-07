@@ -10,15 +10,14 @@ const PictureList = ({ pictures = [], deletePicture }) => {
     }
 
     return (
-        <div className='snap-y flex-col h-full overflow-auto scrollbar-hide p-1 mt-[-70px]'>
+        <div className='snap-y flex-col h-full overflow-auto scrollbar-hide p-1 '>
             {
                 pictures.map((data, index) => {
                     let img = new Image();
                     img.src = data.imgUrl;
-                    return img.onload = <Picture key={index} url={data.imgUrl} public_id={data.public_id} deletePicture={deletePicture} />
+                    return img.onload = <Picture key={index} url={data.imgUrl} img_public_id={data.img_public_id} deletePicture={deletePicture} />
                 })
             }
-            <div className='h-16'></div>
         </div>
     )
 }

@@ -11,127 +11,137 @@ import pictureServices from '../services/PicturesServices.js';
 const Search = () => {
 
     const { state } = useLocation();
-    const { searchUser } = state;
+    const { searchCategory } = state;     // contiene el texto ingresado en el input de busqueda del navbar
 
-    const [dataUsers, setDataUsers] = useState([]);
-    const [userActive, setUserActive] = useState(null);
-    const [userPics, setUserPics] = useState([]);
-    const [loadingUsers, setLoadingUsers] = useState(true);
+    const [categories, setCategories] = useState(null);
+    const [categoryActive, setCategoryActive] = useState(null);
+    const [pics, setPics] = useState([null]);
+    const [loadingCategories, setLoadingCategories] = useState(true);
     const [loadingPics, setLoadingPics] = useState(true);
 
 
-    async function cambiarEstado(_id) {
-        setLoadingPics(true);
-        const saved = await UserServices.saveActiveUser(_id);
-        if (saved) {
-            const users = await UserServices.getUsers();
-            const result = filtrarBusqueda(users);
-            if (result) {
-                setDataUsers(result);
-                // si existen usuarios se busca el activo
-                setUserActive(result.find((u) => u.active == true));
-            } else {
-                setUserActive(null);
+    function filtrarBusqueda(categoryList) {
+        let result = categoryList.filter((elem) => {
+            return elem.categoryName.toLowerCase().includes(searchCategory.toLowerCase());
+        })
+        result = result.map((c)=>{
+            if(c.isActive){
+                c.isActive = false;
             }
-        }
+            return c;
+        });
+        return result;
     }
 
-    async function deleteUser(userId) {
+    async function cambiarEstado(_id) {
         setLoadingPics(true);
-        const deleted = await UserServices.deleteUser(userId);
+        let categoriesAux = await categories.map((c)=> {
+            if(c.isActive == true){
+                c.isActive = false;
+            }
+            return c;
+        });
+        categoriesAux = await categoriesAux.map((c)=> {
+            if(c.category_id == _id){
+                c.isActive = true;
+                setCategoryActive(c);
+            }
+            return c;
+        });
 
-        if (deleted.ok) {
-            await pictureServices.deleteAllPictures(userId);
-            setUserPics([]);
-            const users = await UserServices.getUsers();
-            const result = filtrarBusqueda(users);
-            setDataUsers(result);
-            setUserActive(null);
+        if(categoryActive && categoryActive.category_id == _id){
+            setTimeout(() => {
+                setLoadingPics(false);
+            }, 200);
+        }
+        setCategories(categoriesAux);
+    }
+
+    async function deleteCategory(category) {
+        setLoadingPics(true);
+        const response = await CategoryServices.deleteCategory(category);
+
+        if (response.deleted) {
+            setPics([]);    // se reinicia la lista de imagenes
+            fetchDataUser();    // se vuelve a pedir los datos del usuario
         } else {
-            alert('No se pudo borrar el usuario.');
+            alert('No se pudo borrar la categoria.');
         }
         setLoadingPics(false);
     }
 
     async function deletePicture(public_id) {
-        const deleted = await pictureServices.deleteOnePicture(userActive._id, public_id);
+        const response = await pictureServices.deleteOnePicture(categoryActive.category_id, public_id);
 
-        if (deleted.data.ok) {
-            getPics();
+        if (response.deleted) {
+            getCategoryPics();
         } else {
             alert('No se pudo borrar la imagen.');
         }
     }
 
-    function filtrarBusqueda(users) {
-        let result = users.filter((user) => {
-            return user.userName.toLowerCase().includes(searchUser.toLowerCase())
-        })
-        return result;
+    async function fetchDataUser() {
+        const res = await UserServices.getCategories();
+        const resFiltrado = await filtrarBusqueda(res.userCategories);
+
+        setCategories(resFiltrado);
+        setCategoryActive(null);
+        setLoadingCategories(false);
     }
 
-    // 1° se piden los datos de los usuarios
+    // 1° se piden los datos del usuario y se filtra la categoria buscada
     useEffect(() => {
-        async function fetchData() {
-            setDataUsers([]);
-            setUserPics([]);
-            const users = await UserServices.getUsers();
-            const result = filtrarBusqueda(users);
-            setDataUsers(result);
-            // setea al primer resultado como activo
-            if (result.length > 0) {
-                cambiarEstado(result[0]._id)
-            }
-            
-            setLoadingUsers(false);
-        }
-        fetchData();
-    }, [searchUser]);
+        setLoadingCategories(true);
+        setLoadingPics(true);
+        fetchDataUser();
+    }, [searchCategory]);
 
-    const getPics = async () => {
-        if (userActive) {
-            let pictures = await pictureServices.getPictures(userActive._id); // se obtienen las imagenes del usuario activo
-            if (pictures) {
-                setUserPics(pictures.data.images);
+    const getCategoryPics = async () => {
+        // si hay una categoria activa se buscan las imagenes de la categoria.
+        if (categoryActive) {
+            const response = await pictureServices.getPictures(categoryActive.category_id); // se obtienen las imagenes de la categoria activa
+            
+            if (await response) {
+                setPics(response.images);
+                setTimeout(() => {
+                    setLoadingPics(false);
+                }, 200);
             }
+        } else {
+            setLoadingPics(false);
         }
     }
 
     // actualiza las imagenes. cuando se actualiza el usuario activo se obtienen las url de las imagenes
     useEffect(() => {
         setLoadingPics(true);
-        setUserPics([]);
-        getPics();
-        setLoadingPics(false);
-    }, [userActive]);
+        setPics([]);
+        getCategoryPics();
+
+    }, [categoryActive]);
+
 
     return (
-        <div>
-            <p className='border-primary bg-secondary md:bg-secondary-md m-1 md:m-2 p-2'>
-                Resultados para: <span className='font-semibold capitalize'> {searchUser} </span>
-            </p>
-            <main className='flex flex-row justify-between m-1 md:m-2 gap-1 md:gap-2'>
 
-                <aside className='border-primary bg-secondary md:bg-secondary-md basis-1/4 h-[90vh]'>
-                    <AddUserButton />
+        <div className='h-full' >
+            <p className='border-primary bg-secondary md:bg-secondary-md m-1 md:m-2 p-2'>
+                Resultados para: <span className='font-semibold'> {searchCategory} </span>
+            </p>
+            <main className='flex flex-row justify-between m-1 md:m-2 gap-1 md:gap-2 '>
+                <aside className=' border-primary bg-secondary md:bg-secondary-md basis-1/4 h-[90vh]'>
                     {
-                        loadingUsers ? <Loading small={true} /> : <CategoryList users={dataUsers} cambiarEstado={cambiarEstado} deleteUser={deleteUser} />
+                        loadingCategories ? <Loading small={true} /> : <CategoryList categories={categories} cambiarEstado={cambiarEstado} deleteCategory={deleteCategory} />
                     }
                 </aside>
 
-                <article className='border-primary bg-secondary md:bg-secondary-md basis-3/4 h-[90vh]'>
+                <article className=' border-primary bg-secondary md:bg-secondary-md basis-3/4 h-[90vh]'>
                     {
-                        // si hay un usuario seleccionado se muestra el boton de agregar imagen
-                        userActive ? <AddPhotoButton user={userActive} /> : <></>
+                        loadingPics ? <Loading /> : <PictureList pictures={pics} deletePicture={deletePicture} />
                     }
-                    {
-                        loadingPics ? <Loading /> : <PictureList userPictures={userPics} deletePicture={deletePicture} />
-                    }
-
                 </article>
 
             </main>
-        </div>
+        </div >
     )
 }
 
