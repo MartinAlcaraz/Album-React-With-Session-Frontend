@@ -21,9 +21,11 @@ const Search = () => {
 
 
     function filtrarBusqueda(categoryList) {
+        // se filtran los nombre de las categorias que contienen el texto buscado
         let result = categoryList.filter((elem) => {
             return elem.categoryName.toLowerCase().includes(searchCategory.toLowerCase());
         })
+        // se setean todos los resultados en isActive = false;
         result = result.map((c)=>{
             if(c.isActive){
                 c.isActive = false;
@@ -93,6 +95,8 @@ const Search = () => {
     useEffect(() => {
         setLoadingCategories(true);
         setLoadingPics(true);
+        setPics([]);
+        setLoadingPics(false);
         fetchDataUser();
     }, [searchCategory]);
 
@@ -117,7 +121,6 @@ const Search = () => {
         setLoadingPics(true);
         setPics([]);
         getCategoryPics();
-
     }, [categoryActive]);
 
 
