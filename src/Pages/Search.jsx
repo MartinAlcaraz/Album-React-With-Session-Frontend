@@ -1,7 +1,5 @@
 import { useState, useEffect } from 'react'
 import { useLocation } from 'react-router-dom';
-import AddPhotoButton from '../components/AddPhotoButton';
-import AddUserButton from '../components/AddCategoryButton';
 import PictureList from '../components/PicturesList';
 import CategoryList from '../components/CategoryList';
 import Loading from '../components/Loading.jsx';
@@ -26,8 +24,8 @@ const Search = () => {
             return elem.categoryName.toLowerCase().includes(searchCategory.toLowerCase());
         })
         // se setean todos los resultados en isActive = false;
-        result = result.map((c)=>{
-            if(c.isActive){
+        result = result.map((c) => {
+            if (c.isActive) {
                 c.isActive = false;
             }
             return c;
@@ -37,21 +35,21 @@ const Search = () => {
 
     async function cambiarEstado(_id) {
         setLoadingPics(true);
-        let categoriesAux = await categories.map((c)=> {
-            if(c.isActive == true){
+        let categoriesAux = await categories.map((c) => {
+            if (c.isActive == true) {
                 c.isActive = false;
             }
             return c;
         });
-        categoriesAux = await categoriesAux.map((c)=> {
-            if(c.category_id == _id){
+        categoriesAux = await categoriesAux.map((c) => {
+            if (c.category_id == _id) {
                 c.isActive = true;
                 setCategoryActive(c);
             }
             return c;
         });
 
-        if(categoryActive && categoryActive.category_id == _id){
+        if (categoryActive && categoryActive.category_id == _id) {
             setTimeout(() => {
                 setLoadingPics(false);
             }, 200);
@@ -84,9 +82,12 @@ const Search = () => {
 
     async function fetchDataUser() {
         const res = await UserServices.getCategories();
-        const resFiltrado = await filtrarBusqueda(res.userCategories);
-
-        setCategories(resFiltrado);
+        if (res.userCategories) {
+            const resFiltrado = await filtrarBusqueda(res.userCategories);
+            setCategories(resFiltrado);
+        }else{
+            setCategories([]);
+        }
         setCategoryActive(null);
         setLoadingCategories(false);
     }
@@ -104,7 +105,7 @@ const Search = () => {
         // si hay una categoria activa se buscan las imagenes de la categoria.
         if (categoryActive) {
             const response = await pictureServices.getPictures(categoryActive.category_id); // se obtienen las imagenes de la categoria activa
-            
+
             if (await response) {
                 setPics(response.images);
                 setTimeout(() => {
@@ -142,7 +143,6 @@ const Search = () => {
                         loadingPics ? <Loading /> : <PictureList pictures={pics} deletePicture={deletePicture} />
                     }
                 </article>
-
             </main>
         </div >
     )

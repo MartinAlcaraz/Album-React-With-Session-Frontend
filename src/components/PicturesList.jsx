@@ -5,7 +5,7 @@ const PictureList = ({ pictures = [], deletePicture }) => {
 
     if (pictures.length == 0) {
         return (
-            <span className="px-auto">No hay fotos agregadas</span>
+            <p className="px-auto mt-[-4.5rem]">No hay fotos agregadas</p>
         )
     }
 

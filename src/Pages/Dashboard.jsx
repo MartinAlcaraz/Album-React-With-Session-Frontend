@@ -106,7 +106,7 @@ const Dashboard = () => {
         <div className='h-full' >
             <main className='flex flex-row justify-between m-1 md:m-2 gap-1 md:gap-2'>
 
-                <aside className=' border-primary bg-secondary md:bg-secondary-md basis-1/4 h-[90vh]'>
+                <aside className='border-primary bg-secondary md:bg-secondary-md basis-1/4 h-[90vh]'>
                     <AddCategoryButton />
                     <div className='mt-[-4.5rem] h-full'>
                         {
@@ -115,20 +115,17 @@ const Dashboard = () => {
                     </div>
                 </aside>
 
-                <article className=' border-primary bg-secondary md:bg-secondary-md basis-3/4 h-[90vh]'>
-
-                    {
-                        // si hay una categoria seleccionada se muestra el boton de agregar imagen
-                        categoryActive ? <AddPhotoButton categoryActive={categoryActive} /> : <></>
-                    }
-                    <div className='mt-[-4.5rem] h-full'>
+                <article className='border-primary bg-secondary md:bg-secondary-md basis-3/4 h-[90vh]'>
+                        {
+                            // si hay una categoria seleccionada se muestra el boton de agregar imagen
+                            categoryActive ? <AddPhotoButton categoryActive={categoryActive} /> : <></>
+                        }
+                    <div className=' h-full'>
                         {
                             loadingPics ? <Loading /> : <PictureList pictures={pics} deletePicture={deletePicture} />
                         }
                     </div>
-
                 </article>
-
             </main>
         </div >
     )

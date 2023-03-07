@@ -82,7 +82,7 @@ const AddCategory = () => {
                 showLoading ? <ModalLoading /> : <></>
             }
 
-            <h2 className='mx-auto text-center text-2xl font-semibold'>Crear categoria</h2>
+            <h2 className='mx-auto text-center text-2xl font-semibold py-4'>Crear categoria</h2>
             <form onSubmit={handleSubmit(onsubmit)} className="flex flex-col-reverse gap-4 items-center sm:flex-row">
 
                 <div className="flex flex-col basis-1/2">

@@ -75,7 +75,7 @@ const AddPhotos = () => {
     }
 
     return (
-        <div className='m-1 mt-0 min-h-[80vh] p-10 bg-secondary md:bg-secondary-md border-primary'>
+        <div className='m-1 mt-0 min-h-[80vh] p-10 pt-4 bg-secondary md:bg-secondary-md border-primary'>
             {
                 showLoading? <ModalLoading /> : <></>
             }
@@ -88,7 +88,7 @@ const AddPhotos = () => {
                     {
                         loadingImg ? <Loading /> :
                             <div className='h-full hover:cursor-pointer' onClick={addImage} >
-                                <img src={selectedImg} className="h-full min-h-[30vh]  mx-auto" />
+                                <img src={selectedImg} className="max-h-[45vh] min-h-[30vh] mx-auto"/>
                             </div>
                     }
                 </div>

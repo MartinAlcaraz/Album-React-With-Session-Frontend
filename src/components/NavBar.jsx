@@ -95,7 +95,7 @@ const NavBar = () => {
                     user.logged ?
                         <div className="mt-1 w-full md:w-auto flex justify-between md:justify-around">
                             <div className="flex flex-col  mx-4">
-                                <img src={user.imgUrl} className='mx-4 w-12'></img>
+                                <img src={user.imgUrl} className='mx-4 w-12 rounded-full'></img>
                                 <p className="text-center m-auto uppercase hidden md:block">{user.username}</p>
                             </div>
                             <div className="flex">
