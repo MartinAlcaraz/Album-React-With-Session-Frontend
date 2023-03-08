@@ -2,7 +2,8 @@ import axios from "axios";
 
 // const URI = 'https://localhost:3000';               //  si estamos en un servidor para produccion se deja asi   = '/api/pictures'
 //const URI = 'http://localhost:3000/api/pictures';     //  si estamos en desarrollo en el localhost
-const URI = 'https://api-album-react-with-session-backend.onrender.com';
+// const URI = 'https://api-album-react-with-session-backend.onrender.com';
+import URI from "./URI.js";
 
 
 const pictureServices = {};

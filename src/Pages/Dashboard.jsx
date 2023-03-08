@@ -118,11 +118,11 @@ const Dashboard = () => {
                 <article className='border-primary bg-secondary md:bg-secondary-md basis-3/4 h-[90vh]'>
                         {
                             // si hay una categoria seleccionada se muestra el boton de agregar imagen
-                            categoryActive ? <AddPhotoButton categoryActive={categoryActive} /> : <></>
+                            categoryActive ? <AddPhotoButton categoryActive={categoryActive} /> : <div className="mt-[4.5rem]"></div>
                         }
-                    <div className=' h-full'>
+                    <div className='h-full mt-[-4.5rem]'>
                         {
-                            loadingPics ? <Loading /> : <PictureList pictures={pics} deletePicture={deletePicture} />
+                            loadingPics ? <div className='mt-12'> <Loading /> </div> : <PictureList pictures={pics} deletePicture={deletePicture} />
                         }
                     </div>
                 </article>

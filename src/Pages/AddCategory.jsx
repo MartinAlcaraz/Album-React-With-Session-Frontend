@@ -115,7 +115,7 @@ const AddCategory = () => {
                             {...register("selectedFile", {
                                 required: "Seleccione una imagen de perfil.",
                                 validate: {
-                                    size: (value) => (value[0].size / 1024 < 2048) || "La imagen debe pesar menos de 2MB",
+                                    size: (value) => (value[0].size / 1024 < 6144) || "La imagen debe pesar menos de 6MB",
                                     tipo: (value) => (["image/jpg", "image/jpeg", "image/png"].includes(value[0].type)) || "Elija otra imagen (.jpg, .jpeg ó .png)"
                                 },
                                 onChange: (value) => cargarImagen(value.target.files[0])

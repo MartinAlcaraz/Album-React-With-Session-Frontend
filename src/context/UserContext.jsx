@@ -14,7 +14,7 @@ export function UserContextProvider(props) {    // componente que contiene el co
         localStorage.setItem('user', JSON.stringify({ logged : false }));
     }
     
-    const [user, setUser] = useState(u);         // se crea la variable de estado global como user = false
+    const [user, setUser] = useState(u);         // se crea la variable de estado global como user.logged = false
 
     const [showModalExpiredLoggin, setShowModalExpiredLoggin] = useState(false);
 
@@ -31,7 +31,7 @@ export function UserContextProvider(props) {    // componente que contiene el co
                 setUnloggedUser();
             }
         }else{
-            setUser({ logged : false });
+            setUnloggedUser();
         }
     }
 

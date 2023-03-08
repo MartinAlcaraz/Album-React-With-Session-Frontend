@@ -75,12 +75,14 @@ const AddPhotos = () => {
     }
 
     return (
-        <div className='m-1 mt-0 min-h-[80vh] p-10 pt-4 bg-secondary md:bg-secondary-md border-primary'>
+        <div className='m-1 mt-0  md:m-2 min-h-[80vh] p-10 pt-4 bg-secondary md:bg-secondary-md border-primary'>
             {
                 showLoading? <ModalLoading /> : <></>
             }
             
-            <img src={categoryInfo?.imageUrl} className="h-20 w-20 mx-auto my-2 md:hidden" />
+            <div className="h-20 w-20 mx-auto my-2 md:hidden">
+                <img src={categoryInfo?.imageUrl} className="h-full w-full object-contain" />
+            </div>
            
             <h2 className='px-4 leading-4 text-xl md:mb-1 md:text-2xl font-semibold text-center'>Agregar foto a la categoria <strong className='capitalize'>{categoryInfo?.categoryName}</strong> <img src={categoryInfo?.imageUrl} className="h-20 hidden md:inline" /></h2>
             <form onSubmit={handleSubmit(agregarFoto)} className='p-4 flex flex-col md:flex-row-reverse'>
@@ -97,7 +99,7 @@ const AddPhotos = () => {
                         {...register('inputFile', {
                             required: "Seleccione una imagen.",
                             validate: {
-                                size: (value) => (value[0].size / 1024 < 2048) || "La imagen debe pesar menos de 2MB",
+                                size: (value) => (value[0].size / 1024 < 6144) || "La imagen debe pesar menos de 6MB",
                                 tipo: (value) => (["image/jpg", "image/jpeg", "image/png"].includes(value[0].type)) || "Elija otra imagen (.jpg, .jpeg ó .png)"
                             },
                             onChange: (value) => cargarImagen(value.target.files[0])
