@@ -1,9 +1,7 @@
-
 // const URI = '/api/users';                //  si estamos en un servidor para produccion se deja asi   = '/api/users'
 // const URI = 'https://localhost:3000'; // en desarrollo
 // const URI = 'https://api-album-react-with-session-backend.onrender.com';
 import URI from "./URI.js";
-
 
 const LoginServices = {};
 
