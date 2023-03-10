@@ -32,7 +32,6 @@ function App() {
         setClassShowMessageOffLine('hidden');
       }, 3000);
     }
-
   }, [navigator.onLine]);
 
   return (

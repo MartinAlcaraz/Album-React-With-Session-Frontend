@@ -105,7 +105,7 @@ const Register = () => {
                         })}
                     />
                     {
-                        errors.nombre ? <div className='text-sm text-rose-500 text-center'>{errors.nombre.message}</div> : <></>
+                        errors.nombre ? <div className='text-sm text-red-500 text-shadow-warning text-center'>{errors.nombre.message}</div> : <></>
                     }
 
                     <input type='password' name="password" className="p-2 m-2 mx-auto rounded-md" placeholder="Password"
@@ -116,7 +116,7 @@ const Register = () => {
                         })}
                     />
                     {
-                        errors.password ? <div className='text-sm text-rose-500 text-center'>{errors.password.message}</div> : <></>
+                        errors.password ? <div className='text-sm text-red-500 text-shadow-warning text-center'>{errors.password.message}</div> : <></>
                     }
 
                     <input type="submit" className="button-primary" value="Agregar usuario" />
@@ -142,7 +142,7 @@ const Register = () => {
                         />
                     </div>
                     {
-                        <div className='text-sm h-4 text-rose-500 text-center'>{errors.selectedFile ? errors.selectedFile.message : ''}</div>
+                        <div className='text-sm h-4 text-red-500 text-shadow-warning text-center'>{errors.selectedFile ? errors.selectedFile.message : ''}</div>
                     }
                     <button className="button-primary" onClick={addImage}>Subir Imagen de Perfil</button>
                 </div>

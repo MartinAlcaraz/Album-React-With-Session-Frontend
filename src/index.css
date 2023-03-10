@@ -33,6 +33,12 @@
 
 }
 
+
+.text-shadow-warning{
+  text-shadow: 1px 1px rgb(26, 26, 26);
+}
+
+
 .spin-slow {
   animation: spin 10s linear infinite;
 }

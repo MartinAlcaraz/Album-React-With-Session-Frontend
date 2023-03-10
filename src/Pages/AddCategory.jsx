@@ -90,16 +90,16 @@ const AddCategory = () => {
                     <input type='text' name="nombre" className="p-4 m-2 rounded-md" placeholder="Nombre de categoria"
                         {...register('nombre', {
                             required: "El nombre de la categoria es requerido",
-                            maxLength: { value: 10, message: "Nombre muy largo." },
+                            maxLength: { value: 16, message: "Nombre muy largo." },
                             minLength: { value: 2, message: "Nombre muy corto." },
-                            pattern: { value: /^[A-Za-z]+$/, message: "No se permiten caracteres especiales" },
+                            pattern: { value: /^[A-Za-z\s]+$/, message: "No se permiten caracteres especiales ó numeros" },
                             validate: {
                                 nameExist: (value) => (nombreNoExiste(value)) || "El nombre de categoria ya existe."
                             }
                         })}
                     />
                     {
-                        errors.nombre ? <div className='text-sm text-rose-500 text-center'>{errors.nombre.message}</div> : <></>
+                        errors.nombre ? <div className='text-md text-red-500 text-shadow-warning text-center'>{errors.nombre.message}</div> : <></>
                     }
                     <input type="submit" className="button-primary" value="Agregar categoria" />
                 </div>
@@ -123,7 +123,7 @@ const AddCategory = () => {
                         />
                     </div>
                     {
-                        <div className='text-sm h-4 text-rose-500 text-center'>{errors.selectedFile ? errors.selectedFile.message : ''}</div>
+                        <div className='text-md h-4 text-red-500 text-shadow-warning text-center'>{errors.selectedFile ? errors.selectedFile.message : ''}</div>
                     }
                     <button className="button-primary" onClick={addImage}>Agregar imagen</button>
                 </div>
